@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\GenderRepository;
+use App\Repository\PassportStateRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: GenderRepository::class)]
-class Gender
+#[ORM\Entity(repositoryClass: PassportStateRepository::class)]
+class PassportState
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,12 +16,12 @@ class Gender
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private ?string $state = null;
 
     /**
-     * @var Collection<int, User>
+     * @var Collection<int, Candidate>
      */
-    #[ORM\OneToMany(targetEntity: Candidate::class, mappedBy: 'gender')]
+    #[ORM\OneToMany(targetEntity: Candidate::class, mappedBy: 'passport_state')]
     private Collection $candidates;
 
     public function __construct()
@@ -34,42 +34,42 @@ class Gender
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getState(): ?string
     {
-        return $this->name;
+        return $this->state;
     }
 
-    public function setName(string $name): static
+    public function setState(string $state): static
     {
-        $this->name = $name;
+        $this->state = $state;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, User>
+     * @return Collection<int, Candidate>
      */
-    public function getUsers(): Collection
+    public function getCandidates(): Collection
     {
         return $this->candidates;
     }
 
-    public function addUser(Candidate $candidate): static
+    public function addCandidate(Candidate $candidate): static
     {
         if (!$this->candidates->contains($candidate)) {
             $this->candidates->add($candidate);
-            $candidate->setGender($this);
+            $candidate->setPassportState($this);
         }
 
         return $this;
     }
 
-    public function removeUser(Candidate $candidate): static
+    public function removeCandidate(Candidate $candidate): static
     {
         if ($this->candidates->removeElement($candidate)) {
             // set the owning side to null (unless already changed)
-            if ($candidate->getGender() === $this) {
-                $candidate->setGender(null);
+            if ($candidate->getPassportState() === $this) {
+                $candidate->setPassportState(null);
             }
         }
 
