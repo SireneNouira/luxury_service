@@ -19,7 +19,13 @@ security:
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
-
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                default_target_path: app_home
+            logout:
+                path: /logout
+                target: app_home
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 

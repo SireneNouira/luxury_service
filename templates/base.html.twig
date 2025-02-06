@@ -87,9 +87,7 @@ $(handler);
 			{% endblock %}
 		{% endblock %}
 
-		{% block styleCustom %}
-
-		{% endblock %}
+		{% block styleCustom %}{% endblock %}
 
 	</head>
 	<body id="top">
@@ -142,12 +140,12 @@ $(handler);
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="menuzord-menu pull-right light" role="navigation">
 								<li class=" dropdown">
-									<a target="_self" href="/templates/auth/login.html">
+									<a target="_self" href="{{ path('app_login') }}">
 										<span>Login</span>
 									</a>
 								</li>
 								<li class=" dropdown">
-									<a target="_self" href="/templates/auth/register.html" class="btn bn-lg gradient secondary btn-block waves-effect waves-light btn-register">
+									<a target="_self" href="{{ path('app_register') }}" class="btn bn-lg gradient secondary btn-block waves-effect waves-light btn-register">
 										<span>Sign Up</span>
 									</a>
 
@@ -274,8 +272,8 @@ $(handler);
 			{% block javascriptFooter %}
 				<script>
 					onAppReady(function () {
-						$('.preload').remove();
-					});
+$('.preload').remove();
+});
 				</script>
 
 			{% endblock %}

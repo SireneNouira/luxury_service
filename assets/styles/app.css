@@ -1,0 +1,20 @@
+.page-title-bg {
+    background-image: url(../../assets/img/bg3.jpg);
+}
+.log-section form .checkbox label {
+    font-size: 16px
+}
+.log-section form .checkbox label a {
+    color: #b6a575;
+    text-decoration: underline;
+    text-transform: inherit;
+    font-size: 16px
+}
+.log-section form .links a {
+    display: block;
+    text-align: center;
+    color: #b6a575;
+    text-decoration: underline;
+    text-transform: inherit;
+    font-size: 16px
+}
