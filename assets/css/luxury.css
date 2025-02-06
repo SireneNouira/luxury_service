@@ -117,7 +117,7 @@ body .log-section form .links a {
     background-color: #b6a575
 }
 .promo-parallax {
-    background-image: url('../bg2.jpg');
+    background-image: url('../img/bg2.jpg');
     background-color: rgba(0,0,0,0.5);
     background-blend-mode: overlay
 }

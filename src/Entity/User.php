@@ -33,12 +33,20 @@ class User
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updated_at = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private ?array $roles = null;
+    #[ORM\Column]
+    private array $roles = [];
 
     #[ORM\Column(length: 255)]
     private ?string $mail = null;
 
+    #[ORM\OneToOne(mappedBy: 'user_id', cascade: ['persist', 'remove'])]
+    private ?Candidate $candidate = null;
+
+    public function __construct()
+    {
+        $this->roles = ['ROLE_USER']; // Par défaut, tout le monde est USER
+    }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -136,6 +144,23 @@ class User
     public function setMail(string $mail): static
     {
         $this->mail = $mail;
+
+        return $this;
+    }
+
+    public function getCandidate(): ?Candidate
+    {
+        return $this->candidate;
+    }
+
+    public function setCandidate(Candidate $candidate): static
+    {
+        // set the owning side of the relation if necessary
+        if ($candidate->getUserId() !== $this) {
+            $candidate->setUserId($this);
+        }
+
+        $this->candidate = $candidate;
 
         return $this;
     }
