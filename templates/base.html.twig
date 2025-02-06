@@ -139,6 +139,9 @@ $(handler);
 						</div>
 						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 							<ul class="menuzord-menu pull-right light" role="navigation">
+						 {% if app.user %}  
+						 <li class=" dropdown"><a target="_self" href="{{ path('app_logout') }}"><span>Logout</span></a></li>
+						  {% else %}
 								<li class=" dropdown">
 									<a target="_self" href="{{ path('app_login') }}">
 										<span>Login</span>
@@ -150,6 +153,7 @@ $(handler);
 									</a>
 
 								</li>
+								{% endif %}
 							</ul>
 							<ul class="menuzord-menu pull-right light" role="navigation">
 								<li class="active dropdown">
@@ -272,8 +276,8 @@ $(handler);
 			{% block javascriptFooter %}
 				<script>
 					onAppReady(function () {
-$('.preload').remove();
-});
+						$('.preload').remove();
+					});	
 				</script>
 
 			{% endblock %}
