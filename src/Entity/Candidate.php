@@ -17,15 +17,21 @@ class Candidate
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'candidate', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'candidates')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Gender $gender = null;
 
     #[ORM\Column(length: 255)]
     private ?string $cv = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $firstname = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
     private ?string $country = null;
@@ -37,10 +43,10 @@ class Candidate
     private ?string $description = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $place_of_birth = null;
+    private ?string $birthplace = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $date_of_birth = null;
+    private ?\DateTimeInterface $birthdate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $passport_file = null;
@@ -72,6 +78,9 @@ class Candidate
     #[ORM\OneToMany(targetEntity: Availability::class, mappedBy: 'state')]
     private Collection $availabilities;
 
+    #[ORM\ManyToOne(inversedBy: 'candidates')]
+    private ?Experience $experience = null;
+
     public function __construct()
     {
         $this->availabilities = new ArrayCollection();
@@ -90,6 +99,30 @@ class Candidate
     public function setUserId(User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getFirstname(): ?string
+    {
+        return $this->firstname;
+    }
+
+    public function setFirstname(string $firstname): static
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    public function getLastname(): ?string
+    {
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): static
+    {
+        $this->lastname = $lastname;
 
         return $this;
     }
@@ -142,26 +175,26 @@ class Candidate
         return $this;
     }
 
-    public function getPlaceOfBirth(): ?string
+    public function getBirthPlace(): ?string
     {
-        return $this->place_of_birth;
+        return $this->birthplace;
     }
 
-    public function setPlaceOfBirth(?string $place_of_birth): static
+    public function setBirthPlace(?string $birthplace): static
     {
-        $this->place_of_birth = $place_of_birth;
+        $this->birthplace = $birthplace;
 
         return $this;
     }
 
-    public function getDateOfBirth(): ?\DateTimeInterface
+    public function getBirthDate(): ?\DateTimeInterface
     {
-        return $this->date_of_birth;
+        return $this->birthdate;
     }
 
-    public function setDateOfBirth(\DateTimeInterface $date_of_birth): static
+    public function setBirthDate(\DateTimeInterface $birthdate): static
     {
-        $this->date_of_birth = $date_of_birth;
+        $this->birthdate = $birthdate;
 
         return $this;
     }
@@ -301,6 +334,18 @@ class Candidate
     public function setGender(?Gender $gender): static
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getExperience(): ?Experience
+    {
+        return $this->experience;
+    }
+
+    public function setExperience(?Experience $experience): static
+    {
+        $this->experience = $experience;
 
         return $this;
     }
