@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CandidateRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -16,9 +17,7 @@ class Candidate
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToOne(inversedBy: 'candidate', cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?User $user = null;
+ 
 
     #[ORM\ManyToOne(inversedBy: 'candidates')]
     #[ORM\JoinColumn(nullable: true)]
@@ -42,10 +41,11 @@ class Candidate
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $birthplace = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $birthdate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -81,26 +81,20 @@ class Candidate
     #[ORM\ManyToOne(inversedBy: 'candidates')]
     private ?Experience $experience = null;
 
+    #[ORM\OneToOne(inversedBy: 'candidate', cascade: ['persist', 'remove'])]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->availabilities = new ArrayCollection();
+     
+            $this->created_at = new DateTimeImmutable(); 
+        
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getUserId(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUserId(User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
     }
 
     public function getFirstname(): ?string
@@ -346,6 +340,18 @@ class Candidate
     public function setExperience(?Experience $experience): static
     {
         $this->experience = $experience;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

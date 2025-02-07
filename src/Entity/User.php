@@ -33,11 +33,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?Candidate $candidate = null;
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Candidate $candidate = null;
     public function __construct()
     {
         $this->roles = ['ROLE_USER']; // Par défaut, tout le monde est USER
@@ -117,22 +118,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getCandidate(): ?Candidate
-    {
-        return $this->candidate;
-    }
+  
 
-    public function setCandidate(Candidate $candidate): static
-    {
-        // set the owning side of the relation if necessary
-        if ($candidate->getUserId() !== $this) {
-            $candidate->setUserId($this);
-        }
-
-        $this->candidate = $candidate;
-
-        return $this;
-    }
 
     public function isVerified(): bool
     {
@@ -142,6 +129,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getCandidate(): ?Candidate
+    {
+        return $this->candidate;
+    }
+
+    public function setCandidate(?Candidate $candidate): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($candidate === null && $this->candidate !== null) {
+            $this->candidate->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($candidate !== null && $candidate->getUser() !== $this) {
+            $candidate->setUser($this);
+        }
+
+        $this->candidate = $candidate;
 
         return $this;
     }
