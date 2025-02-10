@@ -12,14 +12,19 @@ use Symfony\Component\Form\FileUploadError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 final class ProfileController extends AbstractController
 {
     private FileUploader $fileUploader;
+    private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct(FileUploader $fileUploader)
+
+    public function __construct(FileUploader $fileUploader,   UserPasswordHasherInterface $passwordHasher)
     {
         $this->fileUploader = $fileUploader;
+        $this->passwordHasher = $passwordHasher;
     }
 
     #[Route('/profile', name: 'app_profile')]
@@ -27,6 +32,7 @@ final class ProfileController extends AbstractController
     {
 
         $this->fileUploader = $fileUploader;
+        
         /** @var User */
         $user = $this->getUser();
 
@@ -59,6 +65,31 @@ final class ProfileController extends AbstractController
                 $candidate->setProfilePicture($profilPictureName);
             }
 
+
+            $cvFile = $formCandidate->get('cv')->getData();
+
+            if($cvFile){
+                $cvFileName = $fileUploader->upload($cvFile, $candidate, 'cv', 'cvs');
+                $candidate->setCv($cvFileName);
+            }
+
+
+
+
+            $password = $formCandidate->get('password')->getData();
+            $passwordRepeat = $formCandidate->get('password_repeat')->getData();
+            
+            if ($password && $password !== $passwordRepeat) {
+                $this->addFlash('error', 'Passwords do not match.');
+                return $this->redirectToRoute('app_profile');
+            }
+            
+            if ($password) {
+                $encodedPassword = $this->passwordHasher->hashPassword($user, $password);
+                $user->setPassword($encodedPassword);
+            }
+            
+            
             $entityManager->persist($candidate);
             $entityManager->flush();
 
@@ -71,6 +102,7 @@ final class ProfileController extends AbstractController
         return $this->render('profile/index.html.twig', [
             'form' => $formCandidate->createView(),
             'candidate' => $candidate,
+            'user' => $user,
         
         ]);
     }

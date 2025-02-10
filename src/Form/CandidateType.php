@@ -20,11 +20,18 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Mime\Part\File as PartFile;
 use Symfony\Component\Validator\Constraints\File as ConstraintsFile;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Validator\Constraints\EqualTo;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CandidateType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        
+        $user = $options['user']; // Récupérer l'utilisateur actuel depuis les options du formulaire
         $builder
             ->add('firstName', TextType::class, [
                 'required' => false,
@@ -48,10 +55,16 @@ class CandidateType extends AbstractType
                     'class' => 'form-control',
                     'id' => 'current_location',
                 ],
+                'label' => 'Current Location',
             ])
-            // ->add('country', null, [
-            //     'required' => false, // Champ non requis
-            // ])
+            ->add('adress', TextType::class, [
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'id' => 'address',
+                ],
+                'label' => 'Adress',
+            ])
             ->add('profilePicture', FileType::class, [
                 'mapped' => false,
                 'required' => false,
@@ -71,30 +84,70 @@ class CandidateType extends AbstractType
                     'id' => 'photo',
                 ]
             ])
-            ->add('description', null, [
-                'required' => false, // Champ non requis
+            ->add('country', TextType::class, [
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'id' => 'country',
+                ],
+                'label' => 'Country',
             ])
-            ->add('birthplace', null, [
-                'required' => false, // Champ non requis
+            ->add('nationality', TextType::class, [
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'id' => 'nationality',
+                ],
+                'label' => 'Nationality',
             ])
             ->add('birthdate', DateType::class, [
                 'widget' => 'single_text',
-                'label' => false,
+                'format' => 'yyyy-MM-dd',
                 'required' => false,
                 'empty_data' => null,
+                'attr' => [
+                    'id' => 'birth_date',
+                    'class' => 'form-control',
+                ],
+                'label' => 'Birth Date',
+            ])
+            ->add('birthplace', TextType::class, [
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'id' => 'birth_place',
+                ],
+                'label' => 'Birth Place',
+            ])
+            ->add('description', TextType::class, [
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'id' => 'description',
+                    'class' => 'materialize-textarea',
+                ],
+                'label' => 'Description',
             ])
             ->add('passport_file', FileType::class, [
-                'label' => false,
+                'mapped' => false,
                 'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '20M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid Image document',
+                    ])
+                ],
+                'attr' => [
+                    'accept' => '.jpg,.jpeg,.png,.gif',
+                    'id' => 'passport',
+                    'class' => 'file-path validate',
+                ]
             ])
-            
-            ->add('adress', null, [
-                'required' => false, // Champ non requis
-            ])
-            ->add('nationality', null, [
-                'required' => false, // Champ non requis
-            ])
-
             ->add('gender', EntityType::class, [
                 'class' => Gender::class,
                 'choice_label' => 'name',
@@ -109,18 +162,78 @@ class CandidateType extends AbstractType
                 ],
                 'placeholder' => 'Choose an option...',
             ])
+            ->add('experience', EntityType::class, [
+                'class' => Experience::class,
+                'choice_label' => 'level',
+                'required' => false,
+                'attr' => [
+                    'id' => 'experience',
+                    'class' => 'form-control',
+                ],
+                'label' => 'Experience',
+            ])
+            ->add('cv', FileType::class, [
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '20M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid Image document',
+                    ])
+                ],
+                'attr' => [
+                    'accept' => '.jpg,.jpeg,.png,.gif',
+                    'id' => 'cv',
+                    'class' => 'file-path validate',
+                ]
+            ])
+            // ->add('email', EmailType::class, [
+            //     'mapped' => false, 
+            //     'data' => $user ? $user->getEmail() : '', // Pré-remplir avec l'e-mail de l'utilisateur
+            //     'attr' => [
+            //         'class' => 'form-control',
+            //         'readonly' => true, // Empêcher la modification côté client
+            //     ],
+            //     'disabled' => true, // Empêcher la soumission du champ
+            //     'label' => 'Email', // Libellé du champ
+            // ])
+            ->add('password', PasswordType::class, [
+                'mapped' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'id' => 'password',
+                ],
+                'label' => 'New Password',
+                'required' => false,
+            ])
+            ->add('password_repeat', PasswordType::class, [
+                'mapped' => false,
+                'attr' => ['class' => 'form-control', 'id' => 'password_repeat'],
+                'label' => 'Confirm New Password',
+                'required' => false,
+                'constraints' => [new NotBlank(['message' => 'Please confirm your password.'])],
+            ])
+            ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+                $form = $event->getForm();
+                $password = $form->get('password')->getData();
+                $passwordRepeat = $form->get('password_repeat')->getData();
+
+                if ($password && $passwordRepeat && $password !== $passwordRepeat) {
+                    $form->get('password_repeat')->addError(new FormError('Passwords do not match.'));
+                }
+            })
             ->addEventListener(FormEvents::POST_SUBMIT, $this->setUpdatedAt(...))
             // ->add('passport_state', EntityType::class, [
             //     'class' => PassportState::class,
             //     'choice_label' => 'id',
             //     'required' => false,
             // ])
-            // ->add('experience', EntityType::class, [
-            //     'class' => Experience::class,
-            //     'choice_label' => 'level',
-            //     'label' => false,
-            //     'required' => false,
-            // ])
+
         ;
     }
 
@@ -128,6 +241,7 @@ class CandidateType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Candidate::class,
+            'user' => null, // Ajout de l'option 'user'
         ]);
     }
     private function setUpdatedAt(FormEvent $event): void

@@ -137,7 +137,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->candidate;
     }
-    public function setCandidate(Candidate $candidate): static
+    public function setCandidate(Candidate $candidate): self
     {
         // set the owning side of the relation if necessary
         if ($candidate->getUser() !== $this) {
