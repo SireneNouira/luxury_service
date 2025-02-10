@@ -137,16 +137,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->candidate;
     }
-
-    public function setCandidate(?Candidate $candidate): static
+    public function setCandidate(Candidate $candidate): static
     {
-        // unset the owning side of the relation if necessary
-        if ($candidate === null && $this->candidate !== null) {
-            $this->candidate->setUser(null);
-        }
-
         // set the owning side of the relation if necessary
-        if ($candidate !== null && $candidate->getUser() !== $this) {
+        if ($candidate->getUser() !== $this) {
             $candidate->setUser($this);
         }
 

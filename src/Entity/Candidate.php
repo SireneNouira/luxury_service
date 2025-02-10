@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CandidateRepository::class)]
 class Candidate
@@ -23,22 +24,26 @@ class Candidate
     #[ORM\JoinColumn(nullable: true)]
     private ?Gender $gender = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(nullable: true)]
+    #[Assert\Length(max: 255)]
     private ?string $cv = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(nullable: true)]
+    #[Assert\Length(max: 255)]
     private ?string $firstname = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(nullable: true)]
+    #[Assert\Length(max: 255)]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(nullable: true)]
+    #[Assert\Length(max: 255)]
     private ?string $country = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $profil_picture = null;
+    private ?string $profilePicture = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     
@@ -51,7 +56,7 @@ class Candidate
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $passport_file = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $current_location = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -61,13 +66,16 @@ class Candidate
     private ?string $nationality = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    #[Assert\NotNull]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column]
+    #[Assert\NotNull]
+    private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updated_at = null;
+    private ?\DateTimeImmutable $deletedAt = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $deleted_at = null;
 
     #[ORM\ManyToOne(inversedBy: 'candidates')]
     private ?PassportState $passport_state = null;
@@ -84,12 +92,11 @@ class Candidate
     #[ORM\OneToOne(inversedBy: 'candidate', cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
-    public function __construct()
+    public function __construct(DateTimeImmutable $createdAt = new DateTimeImmutable(), DateTimeImmutable $updatedAt = new DateTimeImmutable())
     {
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt; 
         $this->availabilities = new ArrayCollection();
-     
-            $this->created_at = new DateTimeImmutable(); 
-        
     }
 
     public function getId(): ?int
@@ -145,14 +152,14 @@ class Candidate
         return $this;
     }
 
-    public function getProfilPicture(): ?string
+    public function getProfilePicture(): ?string
     {
-        return $this->profil_picture;
+        return $this->profilePicture;
     }
 
-    public function setProfilPicture(?string $profil_picture): static
+    public function setProfilePicture(?string $profilePicture): static
     {
-        $this->profil_picture = $profil_picture;
+        $this->profilePicture = $profilePicture;
 
         return $this;
     }
@@ -243,39 +250,40 @@ class Candidate
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->updated_at;
+        return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updated_at): static
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
-        $this->updated_at = $updated_at;
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
     public function getDeletedAt(): ?\DateTimeImmutable
     {
-        return $this->deleted_at;
+        return $this->deletedAt;
     }
 
-    public function setDeletedAt(?\DateTimeImmutable $deleted_at): static
+    public function setDeletedAt(?\DateTimeImmutable $deletedAt): static
     {
-        $this->deleted_at = $deleted_at;
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }
+
 
     public function getPassportState(): ?PassportState
     {

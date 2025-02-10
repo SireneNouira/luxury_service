@@ -5,6 +5,10 @@
 		select {
 			display: block !important;
 		}
+		.tp-caption.boxshadow,
+		.boxshadow {
+			box-shadow: none !important;
+		}
 	</style>
 {% endblock %}
 
@@ -53,31 +57,6 @@
 		</div>
 	</section>
 
-	{# {{ form_start(form) }}
-			        {{ form_row(form.cv) }}
-			        {{ form_row(form.firstname) }}
-			        {{ form_row(form.lastname) }}
-			        {{ form_row(form.country) }}
-			        {{ form_row(form.profil_picture) }}
-			        {# {{ form_row(form.description) }} #}
-	{# {{ form_row(form.birthplace) }}
-			        {{ form_row(form.birthdate) }}
-			        {{ form_row(form.passport_file) }}
-			        {{ form_row(form.current_location) }}
-			        {{ form_row(form.adress) }}
-			        {{ form_row(form.nationality) }} #}
-	{# {{ form_row(form.created_at) }}
-			        {{ form_row(form.updated_at) }}
-			        {{ form_row(form.deleted_at) }} #}
-	{# {{ form_row(form.user) }} #}
-	{# {{ form_row(form.gender) }} #}
-	{# {{ form_row(form.passport_state) }} #}
-	{# {{ form_row(form.experience) }} #}
-	{# <button type="submit">Envoyer</button>
-
-
-			    {{ form_end(form) }}  #}
-
 
   {{ form_start(form, {'attr': {'id': 'candidateForm', 'role': 'form', 'data-parsley-validate': '', 'enctype': 'multipart/form-data'}}) }}{{ form_errors(form) }}
 		<section class="section-padding">
@@ -85,25 +64,31 @@
 				<div class="row">
 					<h3 class="text-extrabold">Your personal informations</h3>
 					<div class="col-xs-12 col-sm-6 col-md-4">
+					{# gender #}
 						<div class="input-field">
-						<label for="gender" class="active">Gender</label>
-							{{ form_row(form.gender, {'attr': {'id': 'gender', 'class': 'form-control'}}) }}
+						{{ form_widget(form.gender) }}
+							{{ form_label(form.gender) }}
+							{{ form_errors(form.gender) }}
 						</div>
 					</div>
 					<div class="clearfix visible-sm"></div>
 					<div class="col-xs-12 col-sm-6 col-md-4">
+					{# firstName #}
 						<div class="input-field">
-							{{ form_row(form.firstname, {'attr': {'id': 'first_name', 'class': 'form-control'}}) }}
+							{{ form_widget(form.firstName) }}
+							{{ form_label(form.firstName) }}
+							{{ form_errors(form.firstName) }}
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-6 col-md-4">
+					{# lastName #}
 						<div class="input-field">
 							{{ form_row(form.lastname, {'attr': {'id': 'last_name', 'class': 'form-control'}}) }}
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-6 col-md-4">
 						<div class="input-field">
-							{{ form_row(form.current_location, {'attr': {'id': 'current_location', 'class': 'form-control'}}) }}
+							{{ form_widget(form.current_location) }}
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-8">
@@ -119,13 +104,14 @@
 								<span>
 									<i class="material-icons">insert_photo</i>
 									Photo</span>
-								{{ form_row(form.profil_picture, {'attr': {'id': 'photo', 'class': 'file-path validate', 'accept': '.pdf,.jpg,.doc,.docx,.png,.gif'}}) }}
+								{{ form_widget(form.profilePicture) }}
+								{{ form_errors(form.profilePicture) }}
 							</div>
-							{% if form.profil_picture.vars.value %}
+							{% if form.profilePicture.vars.value %}
 								<div class="existing-file">
-									<a href="{{ asset(form.profil_picture.vars.value) }}" target="_blank">
+									<a href="{{ asset(form.profilePicture.vars.value) }}" target="_blank">
 										<i class="material-icons">&#xE24D;</i>
-										{{ form_row(form.profil_picture) }}
+										{{ form_widget(form.profilePicture) }}
 									</a>
 								</div>
 							{% endif %}
@@ -138,23 +124,23 @@
 						<div class="row">
 							<div class="col-xs-12 col-sm-6">
 								<div class="input-field">
-									{{ form_row(form.country, {'attr': {'id': 'country', 'class': 'form-control'}}) }}
+									{# {{ form_row(form.country, {'attr': {'id': 'country', 'class': 'form-control'}}) }} #}
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6">
 								<div class="input-field">
-									{{ form_row(form.nationality, {'attr': {'id': 'nationality', 'class': 'form-control'}}) }}
+									{# {{ form_row(form.nationality, {'attr': {'id': 'nationality', 'class': 'form-control'}}) }} #}
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6">
 								<div class="input-field">
 								<label for="birth_date">Birthdate</label>
-									{{ form_row(form.birthdate, {'attr': {'id': 'birth_date', 'class': 'form-control'}}) }}
+									{# {{ form_row(form.birthdate, {'attr': {'id': 'birth_date', 'class': 'form-control'}}) }} #}
 								</div>
 							</div>
 							<div class="col-xs-12 col-sm-6">
 								<div class="input-field">
-									{{ form_row(form.birthplace, {'attr': {'id': 'birth_place', 'class': 'form-control'}}) }}
+									{# {{ form_row(form.birthplace, {'attr': {'id': 'birth_place', 'class': 'form-control'}}) }} #}
 								</div>
 							</div>
 						</div>
@@ -169,13 +155,13 @@
 									<span>
 										<i class="material-icons">&#xE24D;</i>
 										Passport</span>
-									{{ form_row(form.passport_file, {'attr': {'id': 'passport', 'class': 'file-path validate', 'accept': '.pdf,.jpg,.doc,.docx,.png,.gif'}}) }}
+									{# {{ form_row(form.passport_file, {'attr': {'id': 'passport', 'class': 'file-path validate', 'accept': '.pdf,.jpg,.doc,.docx,.png,.gif'}}) }} #}
 								</div>
 								{% if form.passport_file.vars.value %}
 									<div class="existing-file">
 										<a href="{{ asset(form.passport_file.vars.value) }}" target="_blank">
 											<i class="material-icons">&#xE24D;</i>
-											{{ form_row(form.passport_file) }}
+											{# {{ form_row(form.passport_file) }} #}
 										</a>
 									</div>
 								{% endif %}
@@ -189,17 +175,17 @@
 									<span>
 										<i class="material-icons">&#xE24D;</i>
 										CV</span>
-									{{ form_row(form.cv, {'attr': {'id': 'cv', 'class': 'file-path validate', 'accept': '.pdf,.jpg,.doc,.docx,.png,.gif'}}) }}
+									{# {{ form_row(form.cv, {'attr': {'id': 'cv', 'class': 'file-path validate', 'accept': '.pdf,.jpg,.doc,.docx,.png,.gif'}}) }} #}
 								</div>
 
-								{% if form.cv.vars.value %}
+								{# {% if form.cv.vars.value %}
 									<div class="existing-file">
 										<a href="{{ asset(form.cv.vars.value) }}" target="_blank">
 											<i class="material-icons">&#xE24D;</i>
 											{{ form_row(form.cv) }}
 										</a>
 									</div>
-								{% endif %}
+								{% endif %} #}
 								<div class="file-path-wrapper">
 									<input class="file-path validate" type="text" placeholder="Upload your Curriculum Vitae" readonly>
 								</div>
@@ -220,13 +206,13 @@
 						<div class="col-xs-12 col-sm-12">
 							<div class="input-field">
 							<label for="experience" class="active">Experience</label>
-								{{ form_row(form.experience, {'attr': {'id': 'experience', 'class': 'form-control'}}) }}
+								{# {{ form_row(form.experience, {'attr': {'id': 'experience', 'class': 'form-control'}}) }} #}
 							</div>
 						</div>
 					</div>
 					<div class="col-xs-12 col-sm-12">
 						<div class="input-field">
-							{{ form_row(form.description, {'attr': {'id': 'description', 'class': 'materialize-textarea'}}) }}
+							{# {{ form_row(form.description, {'attr': {'id': 'description', 'class': 'materialize-textarea'}}) }} #}
 						</div>
 					</div>
 				</div>
@@ -239,7 +225,7 @@
 								<h3 class="text-extrabold">Your K-Yachting account</h3>
 								<div class="col-xs-12 col-sm-4">
 									<div class="input-field">
-										<input required="required" id="email" name="email" type="email" value="">
+										<input  id="email" name="email" type="email" value="">
 										<label for="email">Email</label>
 									</div>
 								</div>
