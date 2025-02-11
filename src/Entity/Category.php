@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\ExperienceRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: ExperienceRepository::class)]
-class Experience
+#[ORM\Entity(repositoryClass: CategoryRepository::class)]
+class Category
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -21,7 +21,7 @@ class Experience
     /**
      * @var Collection<int, Candidate>
      */
-    #[ORM\OneToMany(targetEntity: Candidate::class, mappedBy: 'experience')]
+    #[ORM\OneToMany(targetEntity: Candidate::class, mappedBy: 'jobCategory')]
     private Collection $candidates;
 
     public function __construct()
@@ -58,7 +58,7 @@ class Experience
     {
         if (!$this->candidates->contains($candidate)) {
             $this->candidates->add($candidate);
-            $candidate->setExperience($this);
+            $candidate->setJobCategory($this);
         }
 
         return $this;
@@ -68,8 +68,8 @@ class Experience
     {
         if ($this->candidates->removeElement($candidate)) {
             // set the owning side to null (unless already changed)
-            if ($candidate->getExperience() === $this) {
-                $candidate->setExperience(null);
+            if ($candidate->getJobCategory() === $this) {
+                $candidate->setJobCategory(null);
             }
         }
 

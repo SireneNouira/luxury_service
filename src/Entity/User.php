@@ -33,16 +33,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-
     #[ORM\Column]
     private bool $isVerified = false;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Candidate $candidate = null;
-    public function __construct()
-    {
-        $this->roles = ['ROLE_USER']; // Par défaut, tout le monde est USER
-    }
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -118,9 +117,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-  
-
-
     public function isVerified(): bool
     {
         return $this->isVerified;
@@ -137,7 +133,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->candidate;
     }
-    public function setCandidate(Candidate $candidate): self
+
+    public function setCandidate(Candidate $candidate): static
     {
         // set the owning side of the relation if necessary
         if ($candidate->getUser() !== $this) {
@@ -145,6 +142,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->candidate = $candidate;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): static
+    {
+        $this->resetToken = $resetToken;
 
         return $this;
     }

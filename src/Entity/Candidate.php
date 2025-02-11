@@ -4,8 +4,6 @@ namespace App\Entity;
 
 use App\Repository\CandidateRepository;
 use DateTimeImmutable;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -18,52 +16,20 @@ class Candidate
     #[ORM\Column]
     private ?int $id = null;
 
- 
-
-    #[ORM\ManyToOne(inversedBy: 'candidates')]
-    #[ORM\JoinColumn(nullable: true)]
-    private ?Gender $gender = null;
-
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
-    private ?string $cv = null;
-
-    #[ORM\Column(nullable: true)]
-    #[Assert\Length(max: 255)]
-    private ?string $firstname = null;
-
-    #[ORM\Column(nullable: true)]
-    #[Assert\Length(max: 255)]
-    private ?string $lastname = null;
-
-    #[ORM\Column(nullable: true)]
-    #[Assert\Length(max: 255)]
-    private ?string $country = null;
+    private ?string $firstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
     private ?string $profilePicture = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+    #[ORM\OneToOne(inversedBy: 'candidate', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
-    
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $birthplace = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $birthdate = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $passport_file = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $current_location = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $adress = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $nationality = null;
+    #[ORM\ManyToOne(inversedBy: 'candidates')]
+    private ?Gender $gender = null;
 
     #[ORM\Column]
     #[Assert\NotNull]
@@ -76,27 +42,50 @@ class Candidate
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $deletedAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lastName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $currentLocation = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $address = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $country = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $nationality = null;
+
+    #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $birthDate = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $birthPlace = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $notes = null;
 
     #[ORM\ManyToOne(inversedBy: 'candidates')]
-    private ?PassportState $passport_state = null;
-
-    /**
-     * @var Collection<int, Availability>
-     */
-    #[ORM\OneToMany(targetEntity: Availability::class, mappedBy: 'state')]
-    private Collection $availabilities;
+    private ?Category $jobCategory = null;
 
     #[ORM\ManyToOne(inversedBy: 'candidates')]
     private ?Experience $experience = null;
 
-    #[ORM\OneToOne(inversedBy: 'candidate', cascade: ['persist', 'remove'])]
-    private ?User $user = null;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $passport = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $cv = null;
+
 
     public function __construct(DateTimeImmutable $createdAt = new DateTimeImmutable(), DateTimeImmutable $updatedAt = new DateTimeImmutable())
     {
         $this->createdAt = $createdAt;
-        $this->updatedAt = $updatedAt; 
-        $this->availabilities = new ArrayCollection();
+        $this->updatedAt = $updatedAt;
     }
 
     public function getId(): ?int
@@ -104,50 +93,14 @@ class Candidate
         return $this->id;
     }
 
-    public function getFirstname(): ?string
+    public function getFirstName(): ?string
     {
-        return $this->firstname;
+        return $this->firstName;
     }
 
-    public function setFirstname(string $firstname): static
+    public function setFirstName(?string $firstName): static
     {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    public function getLastname(): ?string
-    {
-        return $this->lastname;
-    }
-
-    public function setLastname(string $lastname): static
-    {
-        $this->lastname = $lastname;
-
-        return $this;
-    }
-
-    public function getCv(): ?string
-    {
-        return $this->cv;
-    }
-
-    public function setCv(string $cv): static
-    {
-        $this->cv = $cv;
-
-        return $this;
-    }
-
-    public function getCountry(): ?string
-    {
-        return $this->country;
-    }
-
-    public function setCountry(string $country): static
-    {
-        $this->country = $country;
+        $this->firstName = $firstName;
 
         return $this;
     }
@@ -164,86 +117,26 @@ class Candidate
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getUser(): ?User
     {
-        return $this->description;
+        return $this->user;
     }
 
-    public function setDescription(string $description): static
+    public function setUser(User $user): static
     {
-        $this->description = $description;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getBirthPlace(): ?string
+    public function getGender(): ?Gender
     {
-        return $this->birthplace;
+        return $this->gender;
     }
 
-    public function setBirthPlace(?string $birthplace): static
+    public function setGender(?Gender $gender): static
     {
-        $this->birthplace = $birthplace;
-
-        return $this;
-    }
-
-    public function getBirthDate(): ?\DateTimeInterface
-    {
-        return $this->birthdate;
-    }
-
-    public function setBirthDate(\DateTimeInterface $birthdate): static
-    {
-        $this->birthdate = $birthdate;
-
-        return $this;
-    }
-
-    public function getPassportFile(): ?string
-    {
-        return $this->passport_file;
-    }
-
-    public function setPassportFile(?string $passport_file): static
-    {
-        $this->passport_file = $passport_file;
-
-        return $this;
-    }
-
-    public function getCurrentLocation(): ?string
-    {
-        return $this->current_location;
-    }
-
-    public function setCurrentLocation(string $current_location): static
-    {
-        $this->current_location = $current_location;
-
-        return $this;
-    }
-
-    public function getAdress(): ?string
-    {
-        return $this->adress;
-    }
-
-    public function setAdress(?string $adress): static
-    {
-        $this->adress = $adress;
-
-        return $this;
-    }
-
-    public function getNationality(): ?string
-    {
-        return $this->nationality;
-    }
-
-    public function setNationality(?string $nationality): static
-    {
-        $this->nationality = $nationality;
+        $this->gender = $gender;
 
         return $this;
     }
@@ -284,58 +177,122 @@ class Candidate
         return $this;
     }
 
-
-    public function getPassportState(): ?PassportState
+    public function getLastName(): ?string
     {
-        return $this->passport_state;
+        return $this->lastName;
     }
 
-    public function setPassportState(?PassportState $passport_state): static
+    public function setLastName(?string $lastName): static
     {
-        $this->passport_state = $passport_state;
+        $this->lastName = $lastName;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Availability>
-     */
-    public function getAvailabilities(): Collection
+    public function getCurrentLocation(): ?string
     {
-        return $this->availabilities;
+        return $this->currentLocation;
     }
 
-    public function addAvailability(Availability $availability): static
+    public function setCurrentLocation(?string $currentLocation): static
     {
-        if (!$this->availabilities->contains($availability)) {
-            $this->availabilities->add($availability);
-            $availability->setState($this);
-        }
+        $this->currentLocation = $currentLocation;
 
         return $this;
     }
 
-    public function removeAvailability(Availability $availability): static
+    public function getAddress(): ?string
     {
-        if ($this->availabilities->removeElement($availability)) {
-            // set the owning side to null (unless already changed)
-            if ($availability->getState() === $this) {
-                $availability->setState(null);
-            }
-        }
+        return $this->address;
+    }
+
+    public function setAddress(?string $address): static
+    {
+        $this->address = $address;
 
         return $this;
     }
 
-    
-    public function getGender(): ?Gender
+    public function getCountry(): ?string
     {
-        return $this->gender;
+        return $this->country;
     }
 
-    public function setGender(?Gender $gender): static
+    public function setCountry(?string $country): static
     {
-        $this->gender = $gender;
+        $this->country = $country;
+
+        return $this;
+    }
+
+    public function getNationality(): ?string
+    {
+        return $this->nationality;
+    }
+
+    public function setNationality(?string $nationality): static
+    {
+        $this->nationality = $nationality;
+
+        return $this;
+    }
+
+    public function getBirthDate(): ?\DateTimeImmutable
+    {
+        return $this->birthDate;
+    }
+
+    public function setBirthDate(?\DateTimeImmutable $birthDate): static
+    {
+        $this->birthDate = $birthDate;
+
+        return $this;
+    }
+
+    public function getBirthPlace(): ?string
+    {
+        return $this->birthPlace;
+    }
+
+    public function setBirthPlace(?string $birthPlace): static
+    {
+        $this->birthPlace = $birthPlace;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): static
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
+    public function getJobCategory(): ?Category
+    {
+        return $this->jobCategory;
+    }
+
+    public function setJobCategory(?Category $jobCategory): static
+    {
+        $this->jobCategory = $jobCategory;
 
         return $this;
     }
@@ -352,14 +309,26 @@ class Candidate
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getPassport(): ?string
     {
-        return $this->user;
+        return $this->passport;
     }
 
-    public function setUser(?User $user): self
+    public function setPassport(?string $passport): static
     {
-        $this->user = $user;
+        $this->passport = $passport;
+
+        return $this;
+    }
+
+    public function getCv(): ?string
+    {
+        return $this->cv;
+    }
+
+    public function setCv(?string $cv): static
+    {
+        $this->cv = $cv;
 
         return $this;
     }
