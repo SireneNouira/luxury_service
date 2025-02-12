@@ -28,10 +28,17 @@ class Category
     #[ORM\ManyToMany(targetEntity: JobOfferType::class, mappedBy: 'category')]
     private Collection $jobOfferTypes;
 
+    /**
+     * @var Collection<int, Client>
+     */
+    #[ORM\ManyToMany(targetEntity: Client::class, mappedBy: 'activityType')]
+    private Collection $clients;
+
     public function __construct()
     {
         $this->candidates = new ArrayCollection();
         $this->jobOfferTypes = new ArrayCollection();
+        $this->clients = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -103,6 +110,33 @@ class Category
     {
         if ($this->jobOfferTypes->removeElement($jobOfferType)) {
             $jobOfferType->removeCategory($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Client>
+     */
+    public function getClients(): Collection
+    {
+        return $this->clients;
+    }
+
+    public function addClient(Client $client): static
+    {
+        if (!$this->clients->contains($client)) {
+            $this->clients->add($client);
+            $client->addActivityType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClient(Client $client): static
+    {
+        if ($this->clients->removeElement($client)) {
+            $client->removeActivityType($this);
         }
 
         return $this;
