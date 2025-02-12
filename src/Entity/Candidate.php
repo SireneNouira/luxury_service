@@ -84,6 +84,9 @@ class Candidate
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $cv = null;
 
+    #[ORM\Column]
+    private ?bool $isValide = false;
+    
 
     public function __construct(DateTimeImmutable $createdAt = new DateTimeImmutable(), DateTimeImmutable $updatedAt = new DateTimeImmutable())
     {
@@ -339,6 +342,18 @@ class Candidate
     public function setCv(?string $cv): static
     {
         $this->cv = $cv;
+
+        return $this;
+    }
+
+    public function isValide(): ?bool
+    {
+        return $this->isValide;
+    }
+
+    public function setIsValide(bool $isValide): static
+    {
+        $this->isValide = $isValide;
 
         return $this;
     }
