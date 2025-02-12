@@ -16,6 +16,9 @@ class JobOfferType
     #[ORM\Column]
     private ?int $id = null;
 
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    private ?string $slug = null;
+
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
@@ -58,6 +61,28 @@ class JobOfferType
         return $this->id;
     }
 
+
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function generateSlug(): void
+    {
+        if (!$this->slug && $this->title) {
+            $this->slug = strtolower(str_replace(' ', '-', $this->title));
+        }
+    }
+    
     public function getName(): ?string
     {
         return $this->name;
