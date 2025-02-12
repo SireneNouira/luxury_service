@@ -34,6 +34,7 @@ class CandidateType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'id' => 'first_name',
+                    'data-progress' => 'true',
                 ],
                 'label_attr' => [
                     'class' => 'active',
@@ -45,6 +46,7 @@ class CandidateType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'id' => 'last_name',
+                    'data-progress' => 'true',
                 ],
             ])
             ->add('gender', EntityType::class, [
@@ -65,6 +67,7 @@ class CandidateType extends AbstractType
                 'label' => 'Current location',
                 'attr' => [
                     'id' => 'current_location',
+                    'data-progress' => 'true',
                 ],
             ])
             ->add('address', TextType::class, [
@@ -72,6 +75,7 @@ class CandidateType extends AbstractType
                 'label' => 'Address',
                 'attr' => [
                     'id' => 'address',
+                    'data-progress' => 'true',
                 ],
             ])
             ->add('country', TextType::class, [
@@ -79,6 +83,7 @@ class CandidateType extends AbstractType
                 'label' => 'Country',
                 'attr' => [
                     'id' => 'country',
+                    'data-progress' => 'true',
                 ],
             ])
             ->add('nationality', TextType::class, [
@@ -86,6 +91,7 @@ class CandidateType extends AbstractType
                 'label' => 'Nationality',
                 'attr' => [
                     'id' => 'nationality',
+                    'data-progress' => 'true',
                 ],
             ])
             ->add('birthDate', BirthdayType::class, [

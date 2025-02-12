@@ -70,7 +70,10 @@ class Candidate
     private ?string $notes = null;
 
     #[ORM\ManyToOne(inversedBy: 'candidates')]
-    private ?Category $jobCategory = null;
+    private ?JobOfferType $jobCategory = null;
+
+    #[ORM\ManyToOne(inversedBy: 'candidates')]
+    private ?Category $Category = null;
 
     #[ORM\ManyToOne(inversedBy: 'candidates')]
     private ?Experience $experience = null;
@@ -285,12 +288,19 @@ class Candidate
         return $this;
     }
 
-    public function getJobCategory(): ?Category
+    public function getJobCategory(): ?JobOfferType
     {
         return $this->jobCategory;
     }
 
-    public function setJobCategory(?Category $jobCategory): static
+    public function setJobCategory(?JobOfferType $jobCategory): static
+    {
+        $this->jobCategory = $jobCategory;
+
+        return $this;
+    }
+
+    public function setCategory(?Category $jobCategory): static
     {
         $this->jobCategory = $jobCategory;
 

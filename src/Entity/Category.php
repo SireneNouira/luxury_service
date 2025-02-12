@@ -18,15 +18,20 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    /**
-     * @var Collection<int, Candidate>
-     */
-    #[ORM\OneToMany(targetEntity: Candidate::class, mappedBy: 'jobCategory')]
+    // Ajoutez une relation ManyToMany dans la classe Category
+    #[ORM\ManyToMany(targetEntity: Candidate::class, inversedBy: 'Category')]
     private Collection $candidates;
+
+    /**
+     * @var Collection<int, JobOfferType>
+     */
+    #[ORM\ManyToMany(targetEntity: JobOfferType::class, mappedBy: 'category')]
+    private Collection $jobOfferTypes;
 
     public function __construct()
     {
         $this->candidates = new ArrayCollection();
+        $this->jobOfferTypes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -58,7 +63,7 @@ class Category
     {
         if (!$this->candidates->contains($candidate)) {
             $this->candidates->add($candidate);
-            $candidate->setJobCategory($this);
+            $candidate->setCategory($this);
         }
 
         return $this;
@@ -71,6 +76,33 @@ class Category
             if ($candidate->getJobCategory() === $this) {
                 $candidate->setJobCategory(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, JobOfferType>
+     */
+    public function getJobOfferTypes(): Collection
+    {
+        return $this->jobOfferTypes;
+    }
+
+    public function addJobOfferType(JobOfferType $jobOfferType): static
+    {
+        if (!$this->jobOfferTypes->contains($jobOfferType)) {
+            $this->jobOfferTypes->add($jobOfferType);
+            $jobOfferType->addCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeJobOfferType(JobOfferType $jobOfferType): static
+    {
+        if ($this->jobOfferTypes->removeElement($jobOfferType)) {
+            $jobOfferType->removeCategory($this);
         }
 
         return $this;
