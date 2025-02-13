@@ -4,6 +4,8 @@ namespace App\Controller\Client;
 
 use App\Entity\Candidate;
 use App\Entity\Candidature;
+use App\Entity\Client;
+use App\Entity\JobOfferType;
 use App\Repository\CandidatureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -35,51 +37,46 @@ class CandidatureCrudController extends AbstractCrudController
         return Candidature::class;
     }
 
-    public function findCandidatByCandidatureId(int $candidat_id, int $job_id): Response
+
+
+
+    public function createIndexQueryBuilder($entityClass, $sortDirection, $sortField = null, $filters = null): QueryBuilder
     {
-        // Récupérer le repository de l'entité Candidature
-        $candidatureRepository = $this->entityManager->getRepository(Candidature::class);
-    
-        // Trouver la candidature associée à l'ID candidat_id ET job_id
-        $candidature = $candidatureRepository->findOneBy([
-            'candidat' => $candidat_id,
-            'job' => $job_id,
-        ]);
-    
-        if (!$candidature) {
-            throw $this->createNotFoundException('Candidature non trouvée pour le candidat ID ' . $candidat_id . ' et le job ID ' . $job_id);
+        // Récupérer l'utilisateur connecté
+        $user = $this->security->getUser();
+
+        // Récupérer le repository de l'entité Client
+        $clientRepository = $this->entityManager->getRepository(Client::class);
+
+        // Trouver le client associé à l'utilisateur
+        $client = $clientRepository->findOneBy(['user' => $user]);
+
+        // Créer le QueryBuilder de base
+        $queryBuilder = parent::createIndexQueryBuilder($entityClass, $sortDirection, $sortField, $filters);
+
+        // Si un client est trouvé, filtrer les candidatures par ses offres d'emploi
+        if ($client) {
+            // Récupérer les IDs des offres d'emploi du client
+            $jobOfferIds = $this->entityManager->getRepository(JobOfferType::class)
+                ->createQueryBuilder('j')
+                ->select('j.id')
+                ->where('j.client = :client')
+                ->setParameter('client', $client)
+                ->getQuery()
+                ->getResult();
+
+            // Extraire les IDs des résultats
+            $jobOfferIds = array_column($jobOfferIds, 'id');
+
+            // Filtrer les candidatures par les IDs des offres d'emploi
+            $queryBuilder
+                ->andWhere('entity.job IN (:jobOfferIds)')
+                ->setParameter('jobOfferIds', $jobOfferIds);
         }
-    
-        // Récupérer le candidat et le job associés à la candidature
-        /** @var Candidate $candidate */
-        $candidate = $candidature->getCandidat();
-        /** @var JobOfferType $job */
-        $job = $candidature->getJob();
-    
-        if (!$candidate) {
-            throw $this->createNotFoundException('Candidat non trouvé pour la candidature avec l\'ID ' . $candidat_id);
-        }
-    
-        if (!$job) {
-            throw $this->createNotFoundException('Job non trouvé pour la candidature avec l\'ID ' . $job_id);
-        }
-    
-        // Retourner une réponse JSON avec les informations du candidat et du job
-        return $this->json([
-            'candidat' => [
-                'id' => $candidate->getId(),
-                'nom' => $candidate->getLastName(),
-                'prenom' => $candidate->getFirstName(),
-                // Ajoutez d'autres champs si nécessaire
-            ],
-            'job' => [
-                'id' => $job->getId(),
-                'titre' => $job->getTitle(),
-                'description' => $job->getDescription(),
-                // Ajoutez d'autres champs si nécessaire
-            ],
-        ]);
+
+        return $queryBuilder;
     }
+
 
     public function configureFields(string $pageName): iterable
 {
