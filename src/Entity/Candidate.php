@@ -86,6 +86,9 @@ class Candidate
 
     #[ORM\Column]
     private ?bool $isValide = false;
+
+    #[ORM\OneToOne(mappedBy: 'candidat', cascade: ['persist', 'remove'])]
+    private ?Candidature $candidature = null;
     
 
     public function __construct(DateTimeImmutable $createdAt = new DateTimeImmutable(), DateTimeImmutable $updatedAt = new DateTimeImmutable())
@@ -354,6 +357,28 @@ class Candidate
     public function setIsValide(bool $isValide): static
     {
         $this->isValide = $isValide;
+
+        return $this;
+    }
+
+    public function getCandidature(): ?Candidature
+    {
+        return $this->candidature;
+    }
+
+    public function setCandidature(?Candidature $candidature): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($candidature === null && $this->candidature !== null) {
+            $this->candidature->setCandidat(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($candidature !== null && $candidature->getCandidat() !== $this) {
+            $candidature->setCandidat($this);
+        }
+
+        $this->candidature = $candidature;
 
         return $this;
     }

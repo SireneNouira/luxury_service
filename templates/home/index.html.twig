@@ -201,7 +201,7 @@
                                         <p class="truncate-text">{{ job.description }}.</p>
                                     </div>
                                     <div class="card-action">
-                                        <a class="btn btn-md primary border waves-effect waves-dark" href="/templates/jobs/show.html">Details</a>
+                                        <a class="btn btn-md primary border waves-effect waves-dark" href="{{ path('app_job_show', {'slug': job.slug}) }}">Details</a>
                                         <a class="btn btn-md primary waves-effect waves-light" href="#!">Apply</a>
                                     </div>
                                 </div>
@@ -291,31 +291,4 @@ levels: [
 
 });
 });
-
-// category filter
-
-
-document.addEventListener("DOMContentLoaded", function () {
-const filters = document.querySelectorAll(".portfolio-filter li");
-const items = document.querySelectorAll(".portfolio-item");
-
-filters.forEach(filter => {
-filter.addEventListener("click", function () {
-const selectedCategory = this.getAttribute("data-group");
-
-// Retirer la classe active de tous les filtres
-filters.forEach(f => f.classList.remove("active"));
-this.classList.add("active");
-
-// Afficher/Masquer les jobs en fonction de la catégorie sélectionnée
-items.forEach(item => {
-const groups = JSON.parse(item.getAttribute("data-groups"));
-if (groups.includes(selectedCategory) || selectedCategory === "all") {
-item.style.display = "block";
-} else {
-item.style.display = "none";
-}
-});
-});
-});
-});</script>{% endblock %}
+</script>{% endblock %}

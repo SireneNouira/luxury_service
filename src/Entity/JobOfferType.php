@@ -50,10 +50,17 @@ class JobOfferType
     #[ORM\Column(length: 255)]
     private ?string $salary = null;
 
+    /**
+     * @var Collection<int, Candidature>
+     */
+    #[ORM\OneToMany(targetEntity: Candidature::class, mappedBy: 'job')]
+    private Collection $candidatures;
+
     public function __construct()
     {
         $this->candidates = new ArrayCollection();
         $this->category = new ArrayCollection();
+        $this->candidatures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -205,6 +212,36 @@ class JobOfferType
     public function setSalary(string $salary): static
     {
         $this->salary = $salary;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Candidature>
+     */
+    public function getCandidatures(): Collection
+    {
+        return $this->candidatures;
+    }
+
+    public function addCandidature(Candidature $candidature): static
+    {
+        if (!$this->candidatures->contains($candidature)) {
+            $this->candidatures->add($candidature);
+            $candidature->setJob($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCandidature(Candidature $candidature): static
+    {
+        if ($this->candidatures->removeElement($candidature)) {
+            // set the owning side to null (unless already changed)
+            if ($candidature->getJob() === $this) {
+                $candidature->setJob(null);
+            }
+        }
 
         return $this;
     }
