@@ -34,13 +34,22 @@ class Category
     #[ORM\ManyToMany(targetEntity: Client::class, mappedBy: 'activityType')]
     private Collection $clients;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $slug = null;
+
+  
+
     public function __construct()
     {
         $this->candidates = new ArrayCollection();
         $this->jobOfferTypes = new ArrayCollection();
         $this->clients = new ArrayCollection();
     }
-
+public function __toString(): string
+    {
+        return $this->name;
+    }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -141,4 +150,18 @@ class Category
 
         return $this;
     }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(?string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+ 
 }

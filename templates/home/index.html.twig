@@ -165,80 +165,63 @@
 				<p class="section-sub">Just like our candidates, we offer quality, serious & reliable positions. Come discover them and we will put you in contact with the perfect team for you to form the perfect crew.</p>
 			</div>
 			<div class="portfolio-container">
-{% for job in jobs %}
-    {{ dump(job.category->getName()) }} {# Affiche toutes les données de l'objet job #}
-   
-{% endfor %}
 
-				<ul class="portfolio-filter brand-filter text-center">
+				<ul class="portfolio-filter brand-filter text-center ">
 					<li class="active waves-effect waves-light" data-group="all">All</li>
-					<li class=" waves-effect waves-light" data-group="commercial">Commercial</li>
-					<li class=" waves-effect waves-light" data-group="retail">Retail sales</li>
-					<li class=" waves-effect waves-light" data-group="creative">Creative</li>
-					<li class=" waves-effect waves-light" data-group="technology">Technology</li>
-					<li class=" waves-effect waves-light" data-group="marketing">Marketing & PR</li>
-					<li class=" waves-effect waves-light" data-group="fashion">Fashion & luxury</li>
-					<li class=" waves-effect waves-light" data-group="management">Management & HR</li>
+					{% for category in categories %}
+						<li class="active waves-effect waves-light" data-group="{{ category.slug }}">{{ category.name }}</li>
+					{% endfor %}
 				</ul>
-				
-				<div class="portfolio portfolio-with-title col-2 gutter mt-30">
-	{% for job in jobs %}
-					<div class="portfolio-item" data-groups='["all", ]'>
+
+
+			  <div class="portfolio portfolio-with-title col-2 gutter mt-30">
+      {% for job in jobs %}
+	  {% for category in categories %}
+	  			{% if job.slug == category.name %}
+
+                        <div class="portfolio-item" data-groups='["all", "{{ category.name }}"]'>
+                            <div class="portfolio-wrapper">
+                                <div class="card job-card">
+                                    <div class="card-content">
+                                        <span class="title">
+                                            <span class="card-title">{{ job.name}}</span>
+                                            <span class="ref grey-text">Ref. 1062</span>
+                                        </span>
+                                        <div class="metas mb-20">
+                                            <div class="meta">
+                                                <i class="material-icons">&#xE53E;</i>{{ job.salary}}&euro;
+                                            </div>
+                                            <div class="meta">
+                                                <i class="material-icons">&#xE916;</i>2018-10-01
+                                            </div>
+                                            <div class="meta">
+                                                <i class="material-icons">&#xE55F;</i>Paris
+                                            </div>
+                                        </div>
+                                        <p class="truncate-text">{{ job.description }}.</p>
+                                    </div>
+                                    <div class="card-action">
+                                        <a class="btn btn-md primary border waves-effect waves-dark" href="/templates/jobs/show.html">Details</a>
+                                        <a class="btn btn-md primary waves-effect waves-light" href="#!">Apply</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+						{% endif %}
+					{% endfor %}
+				{% endfor %}
+					</div>
 					
-
-							<div class="portfolio-wrapper">
-								<div class="card job-card">
-									<div class="card-content">
-										<span class="title">
-											<span class="card-title">{{ job.name}}
-											</span>
-											<span class="ref grey-text">Ref. 1062</span>
-										</span>
-										<div class="metas mb-20">
-											<div class="meta">
-												<i class="material-icons">&#xE53E;</i>{{ job.salary}}&euro;
-											</div>
-											<div class="meta">
-												<i class="material-icons">&#xE916;</i>2018-10-01
-											</div>
-											<div class="meta">
-												<i class="material-icons">&#xE55F;</i>Paris
-											</div>
-										</div>
-										<p class="truncate-text">{{ job.description }}</p>
-									</div>
-									<div class="card-action">
-										<a class="btn btn-md primary border waves-effect waves-dark" href="{{ path('app_job_show', {'slug': job.slug}) }}">Details</a>
-										<a class="btn btn-md primary waves-effect waves-light" href="#!">Apply</a>
-									</div>
-								</div>
-							</div>
-						
-
-					</div>{% endfor %}
-					
-
-					<div class="no-item"></div>
-
-				</div>
-
-				<div class="text-center">
-					<a href="/templates/jobs/index.html" class="btn gradient secondary waves-effect waves-light mt-30">View all job offers</a>
-				</div>
-			</div>
+		<div class="text-center">
+			<a href="/templates/jobs/index.html" class="btn gradient secondary waves-effect waves-light mt-30">View all job offers</a>
 		</div>
-	</section>
-{% endblock %}
-
-
-{% block javascriptFooter %}
-	<script type="text/javascript">
-		let bg1URL = "{{ asset('img/bg1.jpg') }}";
+	</div>
+</div></section>{% endblock %}{% block javascriptFooter %}<script type="text/javascript">
+let bg1URL = "{{ asset('img/bg1.jpg') }}";
 let bg2URL = "{{ asset('img/bg2.jpg') }}";
 let bg3URL = "{{ asset('img/bg3.jpg') }}";
 document.querySelector(".rev_slider_wrapper").setAttribute("style", "background:url('" + (
-isMobile ? bg1URL : bg3URL
-) + "');" + "background-size:cover;" + "background-position: center center;" + "height:" + window.innerHeight + "px");
+isMobile ? bg1URL : bg3URL) + "');" + "background-size:cover;" + "background-position: center center;" + "height:" + window.innerHeight + "px");
 
 onAppReady(function () {
 $('.preload').remove();
@@ -313,30 +296,26 @@ levels: [
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    const filters = document.querySelectorAll(".portfolio-filter li");
-    const items = document.querySelectorAll(".portfolio-item");
+const filters = document.querySelectorAll(".portfolio-filter li");
+const items = document.querySelectorAll(".portfolio-item");
 
-    filters.forEach(filter => {
-        filter.addEventListener("click", function () {
-            const selectedCategory = this.getAttribute("data-group");
+filters.forEach(filter => {
+filter.addEventListener("click", function () {
+const selectedCategory = this.getAttribute("data-group");
 
-            // Retirer la classe active de tous les filtres
-            filters.forEach(f => f.classList.remove("active"));
-            this.classList.add("active");
+// Retirer la classe active de tous les filtres
+filters.forEach(f => f.classList.remove("active"));
+this.classList.add("active");
 
-            // Afficher/Masquer les jobs en fonction de la catégorie sélectionnée
-            items.forEach(item => {
-                const groups = JSON.parse(item.getAttribute("data-groups"));
-                if (groups.includes(selectedCategory) || selectedCategory === "all") {
-                    item.style.display = "block";
-                } else {
-                    item.style.display = "none";
-                }
-            });
-        });
-    });
+// Afficher/Masquer les jobs en fonction de la catégorie sélectionnée
+items.forEach(item => {
+const groups = JSON.parse(item.getAttribute("data-groups"));
+if (groups.includes(selectedCategory) || selectedCategory === "all") {
+item.style.display = "block";
+} else {
+item.style.display = "none";
+}
 });
-
-
-	</script>
-{% endblock %}
+});
+});
+});</script>{% endblock %}

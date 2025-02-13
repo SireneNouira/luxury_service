@@ -12,14 +12,15 @@ use Symfony\Component\Routing\Attribute\Route;
 final class HomeController extends AbstractController
 {
     #[Route('/', name: 'app_home')]
-    public function index(JobOfferTypeRepository $JobOfferTypeRepository): Response
+    public function index(JobOfferTypeRepository $JobOfferTypeRepository, CategoryRepository $CategoryRepository): Response
     {
-
+$CategoryRepository = $CategoryRepository->findAll();
         $jobOfferType = $JobOfferTypeRepository->findBy([], ['id' => 'DESC'], 10);
     
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'jobs' => array_reverse($jobOfferType),
+            'categories' => $CategoryRepository,
         ]);
     }
 }
