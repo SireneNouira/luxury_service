@@ -49,13 +49,13 @@
                                         </span>
                                         <div class="metas mb-20">
                                             <div class="meta">
-                                                <i class="material-icons">&#xE53E;</i>{{ job.salary}}&euro;
+                                                <i class="material-icons">&#xE53E;</i>{{ job.salary }}&euro;
                                             </div>
                                             <div class="meta">
-                                                <i class="material-icons">&#xE916;</i>2018-10-01
+                                                <i class="material-icons">&#xE916;</i>{{job.createdAt | date('d/m/Y')}}
                                             </div>
                                             <div class="meta">
-                                                <i class="material-icons">&#xE55F;</i>Paris
+                                                <i class="material-icons">&#xE55F;</i>{{job.lieu}}
                                             </div>
                                         </div>
                                         <p class="truncate-text">{{ job.description }}.</p>

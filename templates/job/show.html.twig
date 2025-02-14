@@ -7,20 +7,33 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<h2 class="white-text">2nd assistant position</h2>
+					<h2 class="white-text">{{job.title}}</h2>
 					<span class="white-text">Ref. 1007</span>
 					<ol class="breadcrumb">
 						<li>
 							<div class="portfolio-nav">
-								<a href="#!" class="waves-effect waves-dark">
+							{% if previousJob %}
+								<a href="{{ path('app_job_previous', {'slug': job.slug}) }}" class="waves-effect waves-dark">
 									<i class="fa fa-angle-left" aria-hidden="true"></i>
 									Prev</a>
+									{% else %}
+									<span class="waves-effect waves-dark disabled:">
+									<i class="fa fa-angle-left" aria-hidden="true"></i>
+									Prev</span>
+									  {% endif %}
+
 								<a href="#!" class="waves-effect waves-dark">
 									<i class="fa fa-th-large" aria-hidden="true"></i>
 								</a>
-								<a href="#!" class="waves-effect waves-dark">Next
+
+								 {% if nextJob %}
+								<a href="{{ path('app_job_next', {'slug': job.slug}) }}" class="waves-effect waves-dark">Next
 									<i class="fa fa-angle-right" aria-hidden="true"></i>
-								</a>
+								</a>       
+								  {% else %}
+								  <span class="waves-effect waves-dark disabled">Next
+									<i class="fa fa-angle-right" aria-hidden="true"></i>
+								</span> {% endif %}
 							</div>
 						</li>
 					</ol>
@@ -46,15 +59,15 @@
 							<li>
 								<span>
 									Pulished at
-								</span>24 May 18</li>
+								</span>{{job.createdAt | date('d/m/Y')}}</li>
 							<li>
 								<span>
 									Position
-								</span>2nd Engineer</li>
+								</span>{{job.position}}</li>
 							<li>
 								<span>
 									Contract Type
-								</span>Full Time</li>
+								</span>{{job.contractType}}</li>
 							<li>
 								<span>
 									Salary
@@ -64,11 +77,11 @@
 							<li>
 								<span>
 									Location
-								</span>Paris</li>
+								</span>{{job.lieu}}</li>
 							<li>
 								<span>
 									Starting date
-								</span>2018-05-18</li>
+								</span>{{job.startingDate | date('d/m/Y')}}</li>
 						</ul>
 						<a class="btn btn-block gradient primary mt-30 waves-effect waves-light" id="apply-button-{{ job.id }}" onclick="applyForJob({{ job.id }})">Apply for this job</a>
 						{# <div class="btn btn-block btn-success mt-30 waves-effect waves-light disabled">You have applied for this job</div> #}
