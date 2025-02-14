@@ -7,11 +7,12 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Serializable;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, Serializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -37,7 +38,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private bool $isVerified = false;
 
-    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist'])]
     private ?Candidate $candidate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -182,5 +183,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->client = $client;
 
         return $this;
+    }
+
+    public function serialize(): string
+    {
+        return serialize([
+            $this->id,
+            $this->email,
+            $this->password,
+            // Ajoutez d'autres propriétés nécessaires
+        ]);
+    }
+
+    public function unserialize($serialized): void
+    {
+        list(
+            $this->id,
+            $this->email,
+            $this->password,
+            // Ajoutez d'autres propriétés nécessaires
+        ) = unserialize($serialized);
     }
 }

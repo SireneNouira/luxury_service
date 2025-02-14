@@ -367,8 +367,10 @@ existingCvFile.style.display = 'none';
 	{# Delete Account #}
 	<div class="row">
 		<div class="col-xs-12 mt-40 mb-80 delete-account">
-			<a href="#!" onclick="return prompt('Please Type \'Delete my account\' to delete your Luxury Services account:') == 'Delete my account'" class="btn btn-block btn-lg waves-effect waves-light">
-				<i class="material-icons">&#xE872;</i>Delete my account</a>
+     <button type="submit" form="deleteAccountForm" class="btn btn-block btn-lg waves-effect waves-light" onclick="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+            <i class="material-icons">&#xE872;</i> Delete my account
+        </button>
+
 		</div>
 	</div>
 
@@ -388,4 +390,7 @@ existingCvFile.style.display = 'none';
 		</div>
 	</div>
 
-</div></section>{{ form_end(form) }}{% endblock %}
+</div></section>{{ form_end(form) }}{# Formulaire externe pour la suppression du compte #}
+<form id="deleteAccountForm" action="{{ path('delete_account') }}" method="POST" style="display: none;">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete_account') }}">
+</form>{% endblock %}

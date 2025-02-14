@@ -18,10 +18,22 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Service\ProfileProgressionCalculator;
-
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Csrf\CsrfToken;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 final class ProfileController extends AbstractController
 {
+    private EntityManagerInterface $entityManager;
+    private CsrfTokenManagerInterface $csrfTokenManager;
+   
+
+    public function __construct(EntityManagerInterface $entityManager, CsrfTokenManagerInterface $csrfTokenManager)
+    {
+        $this->entityManager = $entityManager;
+        $this->csrfTokenManager = $csrfTokenManager;
+    }
+
     #[Route('/profile', name: 'app_profile')]
     public function index(
         EntityManagerInterface $entityManager,
@@ -143,4 +155,48 @@ final class ProfileController extends AbstractController
             'originalCv' => $originalCvFilename ?? null,
         ]);
     }
+
+
+
+ /**
+ * @Route("/delete-account", name="delete_account", methods={"POST"})
+ */
+public function deleteAccount(Request $request): Response
+{
+    // Vérifier le CSRF token
+    $token = new CsrfToken('delete_account', $request->request->get('_token'));
+
+    if (!$this->csrfTokenManager->isTokenValid($token)) {
+        throw $this->createAccessDeniedException('Invalid CSRF token.');
+    }
+
+    // Récupérer l'utilisateur actuellement connecté
+    $user = $this->getUser();
+
+    if (!$user instanceof User) {
+        throw $this->createAccessDeniedException('Invalid user type.');
+    }
+
+    // Récupérer l'entité Candidate associée à l'utilisateur
+    $candidate = $user->getCandidate();
+
+    if ($candidate) {
+        // Mettre à jour le champ deletedAt de l'entité Candidate
+        $candidate->setDeletedAt(new \DateTimeImmutable());
+        $candidate->setUser(null);
+        $this->entityManager->persist($candidate);
+    }
+
+    // Déconnecter l'utilisateur avant de le supprimer
+    $this->container->get('security.token_storage')->setToken(null);
+    $request->getSession()->invalidate();
+
+    // Supprimer l'utilisateur
+    $this->entityManager->remove($user);
+    $this->entityManager->flush();
+
+    // Rediriger vers la page d'accueil
+    return $this->redirectToRoute('app_home');
+}
+
 }
