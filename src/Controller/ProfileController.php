@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Candidate;
+use App\Entity\Category;
+use App\Entity\JobOfferType;
 use App\Entity\User;
 use App\Form\CandidateType;
 use App\Service\FileUploader;
@@ -79,7 +81,10 @@ final class ProfileController extends AbstractController
                 $cvName = $fileUploader->upload($cvFile, $candidate, 'cv', 'curriculum-vitae');
                 $candidate->setCv($cvName);
             }
-
+            $jobCategory = $form->get('jobCategory')->getData();
+            if ($jobCategory instanceof JobOfferType) {
+                $candidate->setJobCategory($jobCategory);
+            }
             $email = $form->get('email')->getData();
             $newPassword = $form->get('newPassword')->getData();
 

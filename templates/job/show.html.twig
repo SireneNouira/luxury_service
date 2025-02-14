@@ -58,7 +58,9 @@
 							<li>
 								<span>
 									Salary
-								</span>{{job.Salary}} &euro;</li>
+								</span>
+								{{job.Salary}}
+								&euro;</li>
 							<li>
 								<span>
 									Location
@@ -69,7 +71,7 @@
 								</span>2018-05-18</li>
 						</ul>
 						<a class="btn btn-block gradient primary mt-30 waves-effect waves-light" id="apply-button-{{ job.id }}" onclick="applyForJob({{ job.id }})">Apply for this job</a>
-						<div class="btn btn-block btn-success mt-30 waves-effect waves-light disabled">You have applied for this job</div>
+						{# <div class="btn btn-block btn-success mt-30 waves-effect waves-light disabled">You have applied for this job</div> #}
 					</div>
 				</div>
 			</div>
@@ -102,41 +104,38 @@
 	</section>
 {% endblock %}
 {% block javascriptFooter %}
-<script>
-//  apply 
+	<script>
+		// apply
 
 function applyForJob(jobId) {
-        const applyButton = document.getElementById(`apply-button-${jobId}`);
+const applyButton = document.getElementById (`apply-button-${jobId}`);
+const appliedMessage = document.createElement('div');
+appliedMessage.className = 'btn btn-block btn-success mt-30 waves-effect waves-light disabled';
+appliedMessage.textContent = 'You have applied for this job';
 
-        // Désactiver le bouton pour éviter des clics multiples
-        applyButton.disabled = true;
+// Désactiver le bouton pour éviter des clics multiples
+applyButton.disabled = true;
 
-        // Envoyer la requête AJAX
-        fetch(`/apply/${jobId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest', // Pour indiquer que c'est une requête AJAX
-            },
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Mettre à jour le bouton pour indiquer que la candidature a été soumise
-                applyButton.textContent = 'Applied';
-                applyButton.classList.remove('btn-primary');
-                applyButton.classList.add('btn-success');
-            } else {
-                // Afficher un message d'erreur
-                alert(data.message);
-                applyButton.disabled = false; // Réactiver le bouton en cas d'erreur
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert('Une erreur s\'est produite lors de la soumission de votre candidature.');
-            applyButton.disabled = false; // Réactiver le bouton en cas d'erreur
-        });
-    }
-</script>
+// Envoyer la requête AJAX
+fetch (`/apply/${jobId}`, {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json',
+'X-Requested-With': 'XMLHttpRequest', // Pour indiquer que c'est une requête AJAX
+}
+}).then(response => response.json()).then(data => {
+if (data.success) { // Remplacer le bouton par le message de succès
+applyButton.parentNode.replaceChild(appliedMessage, applyButton);
+} else { // Afficher un message d'erreur
+alert(data.message);
+applyButton.disabled = false; // Réactiver le bouton en cas d'erreur
+}
+}).catch(error => {
+console.error('Erreur:', error);
+alert('Une erreur s\'est produite lors de la soumission de votre candidature.');
+applyButton.disabled = false; // Réactiver le bouton en cas d'erreur
+});
+}
+
+	</script>
 {% endblock %}

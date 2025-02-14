@@ -8,6 +8,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Attribute\ProfileField;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: CandidateRepository::class)]
 class Candidate
@@ -96,12 +98,12 @@ class Candidate
     #[ProfileField()]
     private ?string $cv = null;
 
-    #[ORM\Column]
-    private ?bool $isValide = false;
+   
+    // #[ORM\OneToOne(mappedBy: 'candidat', cascade: ['persist', 'remove'])]
+    // private ?Candidature $candidature = null;
+    #[ORM\OneToMany(mappedBy: 'candidat', targetEntity: Candidature::class, cascade: ['persist', 'remove'])]
+    private Collection $candidatures;
 
-    #[ORM\OneToOne(mappedBy: 'candidat', cascade: ['persist', 'remove'])]
-    private ?Candidature $candidature = null;
-    
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
     private ?int $completionPercentage = 0;
 
@@ -109,6 +111,7 @@ class Candidate
     {
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->candidatures = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -308,6 +311,14 @@ class Candidate
         return $this;
     }
 
+
+    public function getCategory(): ?Category
+    {
+        return $this->Category;
+    }
+
+
+
     public function getJobCategory(): ?JobOfferType
     {
         return $this->jobCategory;
@@ -363,37 +374,31 @@ class Candidate
         return $this;
     }
 
-    public function isValide(): ?bool
+
+    public function getCandidatures(): Collection
     {
-        return $this->isValide;
+        return $this->candidatures;
     }
-
-    public function setIsValide(bool $isValide): static
+    
+    public function addCandidature(Candidature $candidature): self
     {
-        $this->isValide = $isValide;
-
-        return $this;
-    }
-
-    public function getCandidature(): ?Candidature
-    {
-        return $this->candidature;
-    }
-
-    public function setCandidature(?Candidature $candidature): static
-    {
-        // unset the owning side of the relation if necessary
-        if ($candidature === null && $this->candidature !== null) {
-            $this->candidature->setCandidat(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($candidature !== null && $candidature->getCandidat() !== $this) {
+        if (!$this->candidatures->contains($candidature)) {
+            $this->candidatures[] = $candidature;
             $candidature->setCandidat($this);
         }
-
-        $this->candidature = $candidature;
-
+    
+        return $this;
+    }
+    
+    public function removeCandidature(Candidature $candidature): self
+    {
+        if ($this->candidatures->removeElement($candidature)) {
+            // set the owning side to null (unless already changed)
+            if ($candidature->getCandidat() === $this) {
+                $candidature->setCandidat(null);
+            }
+        }
+    
         return $this;
     }
 

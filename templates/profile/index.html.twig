@@ -56,48 +56,7 @@ if (existingCvFile) {
 existingCvFile.style.display = 'none';
 }
 }
-});
-
-// barre de progression
-const form = document.getElementById('candidateForm');
-const progressElements = form.querySelectorAll('[data-progress="true"]');
-const completionText = document.getElementById('completion-text');
-const completionBar = document.getElementById('completion-bar');
-
-function updateCompletion() {
-    let filledCount = 0;
-    progressElements.forEach(element => {
-        if (element.querySelector('input, select, textarea').value) {
-            filledCount++;
-        }
-    });
-
-    const completionPercentage = Math.round((filledCount / progressElements.length) * 100);
-    completionText.textContent = `Completion: ${completionPercentage}%`;
-    completionBar.style.width = `${completionPercentage}%`;
-
-    if (completionPercentage === 100) {
-        updateIsValide();
-    }
-}
-
-function updateIsValide() {
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', '{{ path('app_is_valide') }}', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            console.log('isValide updated successfully');
-        }
-    };
-    xhr.send(JSON.stringify({ isValide: true }));
-}
-
-progressElements.forEach(element => {
-    element.querySelector('input, select, textarea').addEventListener('input', updateCompletion);
-});
-
-updateCompletion();
+})
 });
 	</script>
 {% endblock %}
@@ -126,12 +85,7 @@ updateCompletion();
 	<!-- Page Content-->
 	<section class="gray-bg">
 		<div class="container">
-			<div class="row">
-				<div
-					class="score-container">
-	<section class="gray-bg">
-		<div class="container">
-			<div class="row">
+				<div class="row">
 				<div class="score-container">
 					<h4>
 						<img src="{{ asset('img/s9bPVaK.gif') }}" style="height: 80px; width: 201px;">
@@ -148,9 +102,17 @@ updateCompletion();
 				</div>
 				<div class="clearfix"></div>
 			</div>
+
+
+
+
+
+
+			</div>
 		</div>
-	</section>
-	{{ form_start(form, {
+		<div class="clearfix"></div>
+	</div>
+</div></section>{{ form_start(form, {
 		'attr': {
 			'id': 'candidateForm',
 			'role': 'form',

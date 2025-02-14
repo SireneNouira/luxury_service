@@ -67,7 +67,7 @@ public function apply(int $jobId, EntityManagerInterface $em, Request $request):
     /** @var Candidate */
     $candidate = $user->getCandidate();
 
-    if (!$candidate->isValide()) {
+    if (!$candidate->getCompletionPercentage() == 100) {
         return $this->json(['message' => 'Vous devez avoir rempli votre profil candidat à 100% pour postuler.', 'success' => false], Response::HTTP_FORBIDDEN);
     }
 

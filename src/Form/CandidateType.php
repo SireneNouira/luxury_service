@@ -6,6 +6,7 @@ use App\Entity\Candidate;
 use App\Entity\Category;
 use App\Entity\Experience;
 use App\Entity\Gender;
+use App\Entity\JobOfferType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
@@ -126,8 +127,8 @@ class CandidateType extends AbstractType
                 ],
             ])
             ->add('jobCategory', EntityType::class, [
-                'class' => Category::class,
-                'choice_label' => 'name',
+                'class' => JobOfferType::class,
+                'choice_label' => 'slug',
                 'required' => false,
                 'placeholder' => 'Choose an option...',
                 'label' => 'Interest in job sector',
