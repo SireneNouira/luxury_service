@@ -56,6 +56,21 @@ class JobOfferType
     #[ORM\OneToMany(targetEntity: Candidature::class, mappedBy: 'job')]
     private Collection $candidatures;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $lieu = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $position = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $contractType = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $startingDate = null;
+
     public function __construct()
     {
         $this->candidates = new ArrayCollection();
@@ -242,6 +257,66 @@ class JobOfferType
                 $candidature->setJob(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getLieu(): ?string
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?string $lieu): static
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getPosition(): ?string
+    {
+        return $this->position;
+    }
+
+    public function setPosition(?string $position): static
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    public function getContractType(): ?string
+    {
+        return $this->contractType;
+    }
+
+    public function setContractType(?string $contractType): static
+    {
+        $this->contractType = $contractType;
+
+        return $this;
+    }
+
+    public function getStartingDate(): ?\DateTimeInterface
+    {
+        return $this->startingDate;
+    }
+
+    public function setStartingDate(?\DateTimeInterface $startingDate): static
+    {
+        $this->startingDate = $startingDate;
 
         return $this;
     }

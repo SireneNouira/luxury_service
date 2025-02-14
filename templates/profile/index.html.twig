@@ -129,28 +129,28 @@ updateCompletion();
 			<div class="row">
 				<div
 					class="score-container">
-					{# <h4>
-																<img src="{{ asset('img/s9bPVaK.gif') }}" style="height: 80px; width: 201px;">
-																&nbsp;
-																																														                            &nbsp; Hooray ! Your profile is complete.
-															</h4>
-															<div class="c100 p100 small complete ">
-																<span>100%</span> #}
-
-					<div id="completion-container slice progress">
-						<div id="completion-text">Completion: 0%</div>
-						<div class="progress  bar">
-							<div id="completion-bar" class="progress-bar fill" role="progressbar" style="width: 0%;"></div>
+	<section class="gray-bg">
+		<div class="container">
+			<div class="row">
+				<div class="score-container">
+					<h4>
+						<img src="{{ asset('img/s9bPVaK.gif') }}" style="height: 80px; width: 201px;">
+						&nbsp;
+																																				                            &nbsp; Hooray ! Your profile is complete.
+					</h4>
+					<div class="c100 {{'p' ~ candidate.completionPercentage}} small complete ">
+						<span>{{candidate.completionPercentage}}%</span>
+						<div class="slice">
+							<div class="bar"></div>
+							<div class="fill"></div>
 						</div>
-
 					</div>
 				</div>
-
+				<div class="clearfix"></div>
 			</div>
 		</div>
-		<div class="clearfix"></div>
-	</div>
-</div></section>{{ form_start(form, {
+	</section>
+	{{ form_start(form, {
 		'attr': {
 			'id': 'candidateForm',
 			'role': 'form',

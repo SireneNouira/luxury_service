@@ -8,6 +8,7 @@ use App\Entity\Client;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -25,8 +26,13 @@ class JobCrudController extends AbstractCrudController
             TextField::new('title'),
             TextField::new('salary'),
             TextField::new('name'),
+            TextField::new('lieu'),
+            TextField::new('position'),
+            TextField::new('contractType'),
             BooleanField::new('active'),
             IdField::new('id')->onlyOnIndex(),
+            DateField::new('createdAt'),
+            DateField::new('startingDate'),
             TextEditorField::new('description'),
             AssociationField::new('category')
                 ->setFormTypeOption('choice_label', 'name')

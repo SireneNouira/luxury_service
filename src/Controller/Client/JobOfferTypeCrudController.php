@@ -6,7 +6,14 @@ use App\Entity\Client;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Validator\Constraints\Date;
 
 class JobOfferTypeCrudController extends AbstractCrudController
 {
@@ -46,5 +53,30 @@ class JobOfferTypeCrudController extends AbstractCrudController
         }
 
         return $queryBuilder;
+    }
+
+    
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            TextField::new('title'),
+            TextField::new('salary'),
+            TextField::new('name'),
+            TextField::new('lieu'),
+            TextField::new('position'),
+            TextField::new('contractType'),
+            BooleanField::new('active'),
+            IdField::new('id')->onlyOnIndex(),
+            TextField::new('slug'),
+            TextEditorField::new('description'),
+            AssociationField::new('category')
+                ->setFormTypeOption('choice_label', 'name')
+                ->setFormTypeOption('by_reference', false),
+                DateField::new('createdAt'),
+                DateField::new('startingDate'),
+
+                
+           
+        ];
     }
 }

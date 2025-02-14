@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Attribute\ProfileField;
 
 #[ORM\Entity(repositoryClass: CandidateRepository::class)]
 class Candidate
@@ -18,10 +19,12 @@ class Candidate
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
+    #[ProfileField()]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
+    #[ProfileField()]
     private ?string $profilePicture = null;
 
     #[ORM\OneToOne(inversedBy: 'candidate', cascade: ['persist', 'remove'])]
@@ -29,6 +32,7 @@ class Candidate
     private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'candidates')]
+    #[ProfileField()]
     private ?Gender $gender = null;
 
     #[ORM\Column]
@@ -43,27 +47,33 @@ class Candidate
     private ?\DateTimeImmutable $deletedAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[ProfileField()]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[ProfileField()]
     private ?string $currentLocation = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[ProfileField()]
     private ?string $country = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[ProfileField()]
     private ?string $nationality = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $birthDate = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[ProfileField()]
     private ?string $birthPlace = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ProfileField()]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -76,12 +86,14 @@ class Candidate
     private ?Category $Category = null;
 
     #[ORM\ManyToOne(inversedBy: 'candidates')]
+    #[ProfileField()]
     private ?Experience $experience = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $passport = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[ProfileField()]
     private ?string $cv = null;
 
     #[ORM\Column]
@@ -90,6 +102,8 @@ class Candidate
     #[ORM\OneToOne(mappedBy: 'candidat', cascade: ['persist', 'remove'])]
     private ?Candidature $candidature = null;
     
+    #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
+    private ?int $completionPercentage = 0;
 
     public function __construct(DateTimeImmutable $createdAt = new DateTimeImmutable(), DateTimeImmutable $updatedAt = new DateTimeImmutable())
     {
@@ -383,4 +397,13 @@ class Candidate
         return $this;
     }
 
+    public function getCompletionPercentage(): ?int
+    {
+        return $this->completionPercentage;
+    }
+    public function setCompletionPercentage(int $completionPercentage): static
+    {
+        $this->completionPercentage = $completionPercentage;
+        return $this;
+    }
 }

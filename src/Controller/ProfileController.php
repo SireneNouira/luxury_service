@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Service\ProfileProgressionCalculator;
+
 
 final class ProfileController extends AbstractController
 {
@@ -24,7 +26,8 @@ final class ProfileController extends AbstractController
         Request $request,
         FileUploader $fileUploader,
         UserPasswordHasherInterface $passwordHasher,
-        MailerInterface $mailer
+        MailerInterface $mailer,
+        ProfileProgressionCalculator $profileProgressionCalculator
     ): Response {
         /** @var User */
         $user = $this->getUser();
@@ -105,6 +108,8 @@ final class ProfileController extends AbstractController
                 }
             }
 
+            $profileProgressionCalculator->calculateProgress($candidate);
+            
             $entityManager->persist($candidate);
             $entityManager->flush();
 
