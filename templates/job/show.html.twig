@@ -80,22 +80,35 @@
 				<div class="row">
 
 					<div class="col-xs-6 col-sm-6 col-md-4">
-						<div class="previous-post-link">
-							<a class="btn border primary waves-effect waves-dark" href="#!">
-								<i class="fa fa-long-arrow-left"></i>Previous
-							</a>
-						</div>
+						 <div class="previous-post-link">
+                {% if previousJob %}
+                    <a class="btn border primary waves-effect waves-dark" href="{{ path('app_job_previous', {'slug': job.slug}) }}">
+                        <i class="fa fa-long-arrow-left"></i>Previous
+                    </a>
+                {% else %}
+                    <span class="btn border primary waves-effect waves-dark disabled">
+                        <i class="fa fa-long-arrow-left"></i>Previous
+                    </span>
+                {% endif %}
+            </div>
 					</div>
 					<div class="hidden-xs hidden-sm col-md-4"></div>
 
 
 					<div class="col-xs-6 col-sm-6 col-md-4">
-						<div class="next-post-link">
-							<a class="btn border primary waves-effect waves-dark" href="#!">
-								Next
-								<i class="fa fa-long-arrow-right"></i>
-							</a>
-						</div>
+					  <div class="next-post-link">
+                {% if nextJob %}
+                    <a class="btn border primary waves-effect waves-dark" href="{{ path('app_job_next', {'slug': job.slug}) }}">
+                        Next
+                        <i class="fa fa-long-arrow-right"></i>
+                    </a>
+                {% else %}
+                    <span class="btn border primary waves-effect waves-dark disabled">
+                        Next
+                        <i class="fa fa-long-arrow-right"></i>
+                    </span>
+                {% endif %}
+            </div>
 					</div>
 
 				</div>

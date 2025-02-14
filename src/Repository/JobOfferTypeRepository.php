@@ -16,6 +16,27 @@ class JobOfferTypeRepository extends ServiceEntityRepository
         parent::__construct($registry, JobOfferType::class);
     }
 
+    public function findPreviousJob(JobOfferType $job): ?JobOfferType
+    {
+        return $this->createQueryBuilder('j')
+            ->where('j.id < :currentId') // Chercher les annonces avec un id inférieur
+            ->setParameter('currentId', $job->getId()) // Utiliser l'id de l'annonce actuelle
+            ->orderBy('j.id', 'DESC') // Trier par id en ordre décroissant
+            ->setMaxResults(1) // Limiter à 1 résultat
+            ->getQuery()
+            ->getOneOrNullResult(); // Retourner null si aucun résultat n'est trouvé
+    }
+    
+    public function findNextJob(JobOfferType $job): ?JobOfferType
+    {
+        return $this->createQueryBuilder('j')
+            ->where('j.id > :currentId') // Chercher les annonces avec un id supérieur
+            ->setParameter('currentId', $job->getId()) // Utiliser l'id de l'annonce actuelle
+            ->orderBy('j.id', 'ASC') // Trier par id en ordre croissant
+            ->setMaxResults(1) // Limiter à 1 résultat
+            ->getQuery()
+            ->getOneOrNullResult(); // Retourner null si aucun résultat n'est trouvé
+    }
     //    /**
     //     * @return JobOfferType[] Returns an array of JobOfferType objects
     //     */

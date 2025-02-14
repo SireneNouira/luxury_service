@@ -28,8 +28,46 @@ final class JobController extends AbstractController
             throw $this->createNotFoundException('Job non trouvé');
         }
     
-        return $this->render('job/show.html.twig', [
-            'job' => $job,
-        ]);
+    // Récupérer l'annonce précédente et suivante
+    $previousJob = $JobOfferTypeRepository->findPreviousJob($job);
+    $nextJob = $JobOfferTypeRepository->findNextJob($job);
+
+    return $this->render('job/show.html.twig', [
+        'job' => $job,
+        'previousJob' => $previousJob,
+        'nextJob' => $nextJob,
+    ]);
+    }
+
+    #[Route('/job/{slug}/previous', name: 'app_job_previous')]
+    public function previous(string $slug, JobOfferTypeRepository $JobOfferTypeRepository): Response
+    {
+        $job = $JobOfferTypeRepository->findOneBy(['slug' => $slug]);
+        if (!$job) {
+            throw $this->createNotFoundException('Job non trouvé');
+        }
+
+        $previousJob = $JobOfferTypeRepository->findPreviousJob($job);
+        if (!$previousJob) {
+            throw $this->createNotFoundException('Aucune annonce précédente trouvée');
+        }
+
+        return $this->redirectToRoute('app_job_show', ['slug' => $previousJob->getSlug()]);
+    }
+
+    #[Route('/job/{slug}/next', name: 'app_job_next')]
+    public function next(string $slug, JobOfferTypeRepository $JobOfferTypeRepository): Response
+    {
+        $job = $JobOfferTypeRepository->findOneBy(['slug' => $slug]);
+        if (!$job) {
+            throw $this->createNotFoundException('Job non trouvé');
+        }
+
+        $nextJob = $JobOfferTypeRepository->findNextJob($job);
+        if (!$nextJob) {
+            throw $this->createNotFoundException('Aucune annonce suivante trouvée');
+        }
+
+        return $this->redirectToRoute('app_job_show', ['slug' => $nextJob->getSlug()]);
     }
 }
