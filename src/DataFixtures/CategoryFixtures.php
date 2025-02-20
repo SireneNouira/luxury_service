@@ -23,6 +23,7 @@ class CategoryFixtures extends Fixture
         foreach (self::CATEGORIES as $categoryName) {
             $category = new Category();
             $category->setName($categoryName);
+            $category->setSlug($categoryName);
             
             $manager->persist($category);
             

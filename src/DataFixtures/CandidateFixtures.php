@@ -6,6 +6,7 @@ use App\Entity\Candidate;
 use App\Entity\Category;
 use App\Entity\Experience;
 use App\Entity\Gender;
+use App\Entity\JobOfferType;
 use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -125,8 +126,8 @@ class CandidateFixtures extends Fixture implements DependentFixtureInterface
             }
 
             try {
-                $jobCategory = $this->getReference('category_' . strtolower(random_array_element(['commercial', 'retail_sales', 'creative', 'technology', 'marketing_pr', 'fashion_luxury', 'management_hr'])), Category::class);
-                $candidate->setJobCategory($jobCategory);
+                $Category = $this->getReference('category_' . strtolower(random_array_element(['commercial', 'retail_sales', 'creative', 'technology', 'marketing_pr', 'fashion_luxury', 'management_hr'])), JobOfferType::class);
+                $candidate->setCategory($Category);
             } catch (\Exception $e) {
                 // Gérer le cas où la référence n'existe pas
             }

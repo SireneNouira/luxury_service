@@ -16,7 +16,7 @@ class JobOfferType
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $slug = null;
 
     #[ORM\Column(length: 255)]
@@ -38,13 +38,13 @@ class JobOfferType
     #[ORM\JoinColumn(nullable: false)]
     private ?Client $client = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable:true)]
     private ?bool $active = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
